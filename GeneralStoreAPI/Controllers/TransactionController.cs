@@ -1,6 +1,7 @@
 ﻿using GeneralStoreAPI.Models;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity.Migrations;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -57,8 +58,35 @@ namespace GeneralStoreAPI.Controllers
 
         //Put
 
+
         //Put{id}
+        public IHttpActionResult Put(int id, Transaction changeTran)
+        {
+            Transaction transaction = _context.Transactions.Find(id);
+            if (transaction == null)
+            {
+                return NotFound();
+            }
+            transaction.CustomerId = changeTran.CustomerId;
+            transaction.ProductSKU = changeTran.ProductSKU;
+            transaction.ItemCount = changeTran.ItemCount;
+            transaction.DateOfTransaction = changeTran.DateOfTransaction;
+            _context.Transactions.AddOrUpdate(transaction);
+            _context.SaveChanges();
+            return Ok();
+        }
 
         //Delete{id}
+        public IHttpActionResult Delete(int id)
+        {
+            Transaction transaction = _context.Transactions.Find(id);
+            if (transaction == null)
+            {
+                return NotFound();
+            }
+            _context.Transactions.Remove(transaction);
+            _context.SaveChanges();
+            return Ok(transaction);
+        }
     }
 }

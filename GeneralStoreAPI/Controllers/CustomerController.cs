@@ -2,6 +2,7 @@
 using Microsoft.Ajax.Utilities;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity.Migrations;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -64,12 +65,32 @@ namespace GeneralStoreAPI.Controllers
         //Put{id}
         //public IHttpActionResult Post(Customer customer)
 
-        //Delete{id}
-        //public IHttpActionResult Delete(Customer customer)
+        public IHttpActionResult Put(int id, Customer changeCustomer)
+        {
+            Customer customer = _context.Customers.Find(id);
+            if (customer == null)
+            {
+                return NotFound();
+            }
+            customer.FirstName = changeCustomer.FirstName;
+            customer.LastName = changeCustomer.LastName;
+            _context.Customers.AddOrUpdate(customer);
+            _context.SaveChanges();
+            return Ok();
+        }
 
-        //_context.Customers.Remove(customer);
-        //_context.SaveChanges();
-        //return Ok();
+        //Delete{id}
+        public IHttpActionResult Delete(int id)
+        {
+            Customer customer = _context.Customers.Find(id);
+            if (customer == null)
+            {
+                return NotFound();
+            }
+            _context.Customers.Remove(customer);
+            _context.SaveChanges();
+            return Ok();
+        }
 
     }
 }

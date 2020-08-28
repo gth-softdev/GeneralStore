@@ -1,6 +1,7 @@
 ﻿using GeneralStoreAPI.Models;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity.Migrations;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -59,8 +60,34 @@ namespace GeneralStoreAPI.Controllers
         //Put
 
         //Put{id}
+        public IHttpActionResult Put(string sku, Product changeProd)
+        {
+            Product product = _context.Products.Find(sku);
+            if (product == null)
+            {
+                return NotFound();
+            }
+            product.Cost = changeProd.Cost;
+            product.Name = changeProd.Name;
+            product.NumberInInventory = changeProd.NumberInInventory;
+            _context.Products.AddOrUpdate(product);
+            _context.SaveChanges();
+            return Ok();
+        }
+
 
         //Delete{id}
+        public IHttpActionResult Delete([FromUri] string sku)
+        {
+            Product product = _context.Products.Find(sku);
+            if (product == null)
+            {
+                return NotFound();
+            }
+            _context.Products.Remove(product);
+            _context.SaveChanges();
+            return Ok();
+        }
         private string GenerateSku(string productName)
         {
             // Initialize a Random object so we can randomly assign this a number
